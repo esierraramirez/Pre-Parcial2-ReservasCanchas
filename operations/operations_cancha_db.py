@@ -17,3 +17,9 @@ def show_all_canchas_db(session: Session) -> list[CanchaID]:
 
     statement = select(CanchaID).where(CanchaID.activa == True)  # noqa: E712
     return session.exec(statement).all()
+
+#Lista las canchas eliminadas lógicamente
+def show_deleted_canchas_db(session: Session) -> list[CanchaID]:
+
+    statement = select(CanchaID).where(CanchaID.activa == False)  # noqa: E712
+    return session.exec(statement).all()
