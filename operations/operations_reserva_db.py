@@ -23,3 +23,9 @@ def create_reserva_db(reserva: ReservaBase, session: Session) -> ReservaID | Non
     session.commit()
     session.refresh(new_reserva)
     return new_reserva
+
+#Funcion para visualizar reservas activas
+def show_all_reservas_db(session: Session) -> list[ReservaID]:
+
+    statement = select(ReservaID).where(ReservaID.activa == True)  # noqa: E712
+    return session.exec(statement).all()
