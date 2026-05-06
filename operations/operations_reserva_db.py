@@ -70,3 +70,26 @@ def update_one_reserva_db(reserva_id: int, new_data: ReservaUpdate, session: Ses
 
     for field, value in reserva_update.items():
         setattr(reserva, field, value)
+
+    if cancha is not None:
+        reserva.valor_total = _calculate_total(cancha.precio_hora, reserva.horas_reservadas)
+
+    session.add(reserva)
+    session.commit()
+    session.refresh(reserva)
+    return reserva
+
+#Elimina una reserva pasandola a inactiva
+def delete_one_reserva_db(reserva_id: int, session: Session) -> ReservaID | None:
+
+    reserva = find_one_reserva_db(reserva_id, session)
+    if reserva is None:
+        return None
+
+    reserva.activa = False
+    reserva.estado = EstadoReserva.CANCELADA
+    reserva.fecha_eliminacion = datetime.utcnow()
+    session.add(reserva)
+    session.commit()
+    session.refresh(reserva)
+    return reserva
