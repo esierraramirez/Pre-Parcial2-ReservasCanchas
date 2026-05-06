@@ -55,3 +55,17 @@ def update_one_cancha_db(cancha_id: int, new_data: CanchaUpdate, session: Sessio
     session.commit()
     session.refresh(cancha)
     return cancha
+
+#Elimina una cancha pasandola a inactiva
+def delete_one_cancha_db(cancha_id: int, session: Session) -> CanchaID | None:
+
+    cancha = find_one_cancha_db(cancha_id, session)
+    if cancha is None:
+        return None
+
+    cancha.activa = False
+    cancha.fecha_eliminacion = datetime.utcnow()
+    session.add(cancha)
+    session.commit()
+    session.refresh(cancha)
+    return cancha
