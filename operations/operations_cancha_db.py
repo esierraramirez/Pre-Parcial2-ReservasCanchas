@@ -35,4 +35,23 @@ def find_one_cancha_db(cancha_id: int, session: Session, include_deleted: bool =
     except NoResultFound:
         return None
     
-    
+#Actualizacion parcial de cancha
+def update_one_cancha_db(cancha_id: int, new_data: CanchaUpdate, session: Session) -> CanchaID | None:
+    """Actualiza parcialmente una cancha."""
+    cancha = find_one_cancha_db(cancha_id, session, include_deleted=True)
+    if cancha is None:
+        return None
+
+    cancha_update = new_data.model_dump(exclude_unset=True)
+
+    # Si se reactiva una cancha, se borra la fecha de eliminación.
+    if cancha_update.get("activa") is True:
+        cancha_update["fecha_eliminacion"] = None
+
+    for field, value in cancha_update.items():
+        setattr(cancha, field, value)
+
+    session.add(cancha)
+    session.commit()
+    session.refresh(cancha)
+    return cancha
