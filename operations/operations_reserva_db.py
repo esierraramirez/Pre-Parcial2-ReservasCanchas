@@ -10,3 +10,16 @@ def _calculate_total(cancha_price: float, horas: int) -> float:
 
     return round(cancha_price * horas, 2)
 
+#Funcion para Crear una reserva si la cancha existe y está activa
+def create_reserva_db(reserva: ReservaBase, session: Session) -> ReservaID | None:
+
+    cancha = find_one_cancha_db(reserva.cancha_id, session)
+    if cancha is None:
+        return None
+
+    new_reserva = ReservaID.model_validate(reserva)
+    new_reserva.valor_total = _calculate_total(cancha.precio_hora, reserva.horas_reservadas)
+    session.add(new_reserva)
+    session.commit()
+    session.refresh(new_reserva)
+    return new_reserva
