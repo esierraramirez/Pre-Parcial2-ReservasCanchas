@@ -29,3 +29,9 @@ def show_all_reservas_db(session: Session) -> list[ReservaID]:
 
     statement = select(ReservaID).where(ReservaID.activa == True)  # noqa: E712
     return session.exec(statement).all()
+
+#Lista las reservas eliminadas
+def show_deleted_reservas_db(session: Session) -> list[ReservaID]:
+
+    statement = select(ReservaID).where(ReservaID.activa == False)  # noqa: E712
+    return session.exec(statement).all()
