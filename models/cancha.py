@@ -13,6 +13,8 @@ class CanchaBase(SQLModel):
 # Tabla de cancha en la base de datos, con campos adicionales para gestión interna.
 class CanchaID(CanchaBase, table=True):
 
+    __tablename__ = "canchas"
+
     id: int | None = Field(default=None, primary_key=True)
     activa: bool = Field(default=True, index=True)
     fecha_eliminacion: datetime | None = Field(default=None)
